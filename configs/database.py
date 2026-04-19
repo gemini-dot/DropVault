@@ -59,12 +59,12 @@ def init_db() -> Database:
 
 
 def get_db() -> Database:
-    """
-    Returns the MongoDB database instance. If the database connection has not been initialized yet, it calls init_db() to establish the connection and return the database instance.
+    """Returns the MongoDB database instance. If the database connection has not been initialized yet, it calls `init_db` to establish the connection and return the database instance.
     Returns:
         Database: The MongoDB database instance.
     """
     global _db
-    if _db is None:
-        return init_db()
+    with _lock:
+        if _db is None:
+            return init_db()
     return _db

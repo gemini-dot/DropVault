@@ -8,10 +8,11 @@ This module is responsible for registering all the routes (blueprints) in the Fl
 
 from routes.auth.login import login_route
 from routes.main import auth_page_route
+from routes.auth.register import register_route
 
 blueprint_groups = {
     "": [auth_page_route],
-    "/auth": [login_route],
+    "/auth": [login_route, register_route],
 }
 
 

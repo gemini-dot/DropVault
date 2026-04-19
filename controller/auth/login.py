@@ -24,8 +24,10 @@ def login() -> tuple[dict, int] | str:
 
     if request.method == "POST":
 
-        email = request.form.get("email")
-        password = request.form.get("password")
+        data = request.get_json() or request.form
+
+        email = data.get("email")
+        password = data.get("password")
 
         if not email or not password:
             return {"success": False, "message": "Email and password are required"}, 400

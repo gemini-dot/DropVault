@@ -12,5 +12,11 @@ db = (
     get_db()
 )  # Initialize the database connection and assign it to the global variable `db` for use throughout the application. This ensures that we have a single, shared database connection that can be accessed from any module that imports this `database` module.
 
+
 if db is None:
     raise Exception("Failed to initialize database connection")
+
+try:
+    db.users.create_index("auth.email", unique=True)
+except Exception as e:
+    print(f"Error creating index on users collection: {e}")
