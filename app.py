@@ -11,7 +11,7 @@ import sys
 import io
 from flask import Flask, render_template, request
 from configs.setting import error_code as error_codes
-from configs.config_app import Config, DevelopmentConfig
+from configs.config_app import Config
 from configs.setting import APP_SECRET_KEY
 from routes import register_routes
 from flask_cors import CORS
