@@ -14,6 +14,9 @@ class RegisterSchema:
         if not self.password:
             return False, "Password required"
 
+        if not self.username:
+            return False, "Username required"
+
         if len(self.username) < 3:
             return False, "Username too short"
 

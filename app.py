@@ -53,6 +53,7 @@ def create_app():
             "https://vault-storage.me",
             "https://dashboard.vault-storage.me",
             "https://api.vault-storage.me",
+            "https://dropvault-uxeo.onrender.com"
             # TODO: add more allowed origins as needed, and consider using environment variables for better flexibility in different deployment environments
             # TODO: Use render.com to test before deploying to Azure.
         ],
