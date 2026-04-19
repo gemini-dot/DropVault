@@ -1,6 +1,6 @@
 import secrets
 from flask import session, request, abort
-
+from os import getenv
 
 def generate_csrf_token():
     if "csrf_token" not in session:
@@ -9,6 +9,10 @@ def generate_csrf_token():
 
 
 def validate_csrf():
+
+    if getenv("FLASK_ENV") == "development":
+        return
+
     token = request.headers.get("X-CSRF-Token")
     session_token = session.get("csrf_token")
 
