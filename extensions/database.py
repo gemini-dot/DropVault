@@ -17,6 +17,6 @@ if db is None:
     raise Exception("Failed to initialize database connection")
 
 try:
-    db.users.create_index("auth.email", unique=True)
+    db.users.create_index("auth.email", unique=True, sparse=True)
 except Exception as e:
     print(f"Error creating index on users collection: {e}")
