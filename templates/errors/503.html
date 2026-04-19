@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đang Bảo Trì | Under Maintenance</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh//gemini-dot/learnpythonserver-sm@main/frontend/styles/error_site/503.css"
+    />
+  </head>
+  <body>
+    <div class="bg-text">MAINTENANCE</div>
+
+    <div class="container">
+      <div class="icon-wrapper">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M22.7,19L13.6,9.9C14.5,7.6 14,4.9 12.1,3C10.1,1 7.1,0.6 4.7,1.7L9,6L6,9L1.7,4.7C0.6,7.1 1,10.1 3,12.1C4.9,14 7.6,14.5 9.9,13.6L19,22.7L22.7,19Z"
+          />
+        </svg>
+      </div>
+
+      <h1>Đang bảo trì</h1>
+      <div class="divider"></div>
+      <p>
+        Tui đang nâng cấp một vài tính năng xịn xò để phục vụ og tốt hơn. <br />
+        Vui lòng quay lại sau ít phút nhé!
+      </p>
+      <div class="countdown">
+        <div class="time-box">
+          <span id="days">00</span>
+          <p>Ngày</p>
+        </div>
+        <div class="time-box">
+          <span id="hours">00</span>
+          <p>Giờ</p>
+        </div>
+        <div class="time-box">
+          <span id="minutes">00</span>
+          <p>Phút</p>
+        </div>
+        <div class="time-box">
+          <span id="seconds">00</span>
+          <p>Giây</p>
+        </div>
+      </div>
+      <a href="javascript:void(0)" class="btn" onclick="toggleForm()"
+        >Gửi Email Liên Hệ</a
+      >
+
+      <div id="contact-form">
+        <textarea placeholder="Nhập lời nhắn của og tại đây..."></textarea>
+        <br />
+        <button class="btn btn-send" onclick="sendMail()">Gửi ngay</button>
+      </div>
+    </div>
+    <script src="../../javascript/error_site/effect/503/503.js"></script>
+    <script src="../../javascript/error_site/effect/503/503(2).js"></script>
+  </body>
+</html>

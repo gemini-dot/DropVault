@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>DevDrop — Sign in</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth/gate.css') }}"/>
+</head>
+<body>
+
+<!-- Background -->
+<div class="bg"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- Page -->
+<div class="page-wrap" id="page-wrap">
+
+  <!-- Top bar -->
+  <div class="top-bar glass">
+    <a href="index.html" class="logo">
+      <span class="logo-mark">dd</span>
+      DevDrop
+    </a>
+    <a href="index.html" class="back-link">← Back to site</a>
+  </div>
+
+  <!-- MAIN CARD -->
+  <div class="glass card" id="main-card">
+
+    <!-- PANE: Choose / saved accounts -->
+    <div class="pane active" id="pane-accounts">
+      <div class="card-header">
+        <div class="card-title">Welcome back</div>
+        <div class="card-sub">Choose an account or sign in with a new one.</div>
+      </div>
+
+      <!-- Saved accounts list -->
+      <div class="saved-section" id="saved-section">
+        <div class="saved-label">Continue as</div>
+        <div class="accounts-list" id="accounts-list">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+      <div class="or-divider" id="or-oauth">or sign in with</div>
+
+      <!-- OAuth -->
+      <div class="oauth-grid" style="margin-bottom:16px">
+        <button class="oauth-btn" onclick="oauthLogin('google')" type="button">
+          <span class="oauth-icon icon-google"></span> Google
+        </button>
+        <button class="oauth-btn" onclick="oauthLogin('github')" type="button">
+          <span class="oauth-icon icon-github"></span> GitHub
+        </button>
+      </div>
+
+      <div class="or-divider">or use email</div>
+
+      <div style="margin-top:16px;display:flex;flex-direction:column;gap:10px">
+        <button class="btn-submit" onclick="showPane('pane-login')" type="button" style="background:transparent;color:var(--dim);border:1px solid var(--mist);box-shadow:none">
+          Sign in with email →
+        </button>
+      </div>
+    </div>
+
+    <!-- PANE: Login / Register tabs -->
+    <div class="pane" id="pane-login">
+
+      <div class="tabs" id="auth-tabs">
+        <button class="tab-btn active" onclick="switchTab('login')" type="button">Sign in</button>
+        <button class="tab-btn" onclick="switchTab('register')" type="button">Create account</button>
+      </div>
+
+      <!-- Login form -->
+      <div id="tab-login">
+        <!-- OAuth -->
+        <div class="oauth-grid">
+          <button class="oauth-btn" onclick="oauthLogin('google')" type="button">
+            <span class="oauth-icon icon-google"></span> Google
+          </button>
+          <button class="oauth-btn" onclick="oauthLogin('github')" type="button">
+            <span class="oauth-icon icon-github"></span> GitHub
+          </button>
+        </div>
+        <div class="or-divider" style="margin-bottom:16px">or</div>
+
+        <div class="form-section">
+          <div class="form-group">
+            <label class="label" for="login-email">Email address</label>
+            <div class="input-wrap">
+              <input class="input input-has-icon" id="login-email" type="email"
+                placeholder="you@example.com" autocomplete="email"
+                oninput="filterEmailSuggestions(this.value)"
+                onfocus="openEmailDropdown()"
+                onblur="setTimeout(closeEmailDropdown,180)"
+              />
+              <span class="input-icon">◎</span>
+              <!-- Email suggestions -->
+              <div class="email-dropdown glass" id="email-dropdown">
+                <!-- rendered by JS -->
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="label" for="login-pw">Password</label>
+            <div class="input-wrap">
+              <input class="input input-has-icon" id="login-pw" type="password"
+                placeholder="Enter your password" autocomplete="current-password"
+                onkeydown="if(event.key==='Enter')submitLogin()"
+              />
+              <span class="input-icon">○</span>
+              <button class="input-action" onclick="togglePw('login-pw',this)" type="button">Show</button>
+            </div>
+          </div>
+          <div class="row-between">
+            <label class="checkbox-label" onclick="toggleCheck(this)">
+              <span class="checkbox" id="remember-check"></span>
+              Remember me
+            </label>
+            <a href="#" class="forgot-link" onclick="showPane('pane-forgot');return false">Forgot password?</a>
+          </div>
+          <button class="btn-submit" onclick="submitLogin()" type="button" id="login-btn">
+            <span class="spinner"></span>
+            <span class="btn-label">Sign in →</span>
+          </button>
+          <p class="terms-note">By signing in you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.</p>
+        </div>
+      </div>
+
+      <!-- Register form -->
+      <div id="tab-register" style="display:none">
+        <div class="oauth-grid">
+          <button class="oauth-btn" onclick="oauthLogin('google')" type="button">
+            <span class="oauth-icon icon-google"></span> Google
+          </button>
+          <button class="oauth-btn" onclick="oauthLogin('github')" type="button">
+            <span class="oauth-icon icon-github"></span> GitHub
+          </button>
+        </div>
+        <div class="or-divider" style="margin-bottom:16px">or</div>
+
+        <div class="form-section">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="form-group">
+              <label class="label" for="reg-first">First name</label>
+              <input class="input" id="reg-first" type="text" placeholder="Jane" autocomplete="given-name"/>
+            </div>
+            <div class="form-group">
+              <label class="label" for="reg-last">Last name</label>
+              <input class="input" id="reg-last" type="text" placeholder="Doe" autocomplete="family-name"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="label" for="reg-email">Email address</label>
+            <div class="input-wrap">
+              <input class="input input-has-icon" id="reg-email" type="email" placeholder="you@example.com" autocomplete="email"/>
+              <span class="input-icon">◎</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="label" for="reg-pw">Password</label>
+            <div class="input-wrap">
+              <input class="input input-has-icon" id="reg-pw" type="password"
+                placeholder="Create a password" autocomplete="new-password"
+                oninput="checkStrength(this.value)"
+              />
+              <span class="input-icon">○</span>
+              <button class="input-action" onclick="togglePw('reg-pw',this)" type="button">Show</button>
+            </div>
+            <div class="strength-bar" id="strength-bar">
+              <div class="strength-seg" id="ss1"></div>
+              <div class="strength-seg" id="ss2"></div>
+              <div class="strength-seg" id="ss3"></div>
+              <div class="strength-seg" id="ss4"></div>
+            </div>
+            <div class="strength-hint" id="strength-hint">Use 8+ characters with letters, numbers & symbols</div>
+          </div>
+          <div class="form-group">
+            <label class="label" for="reg-pw2">Confirm password</label>
+            <div class="input-wrap">
+              <input class="input input-has-icon" id="reg-pw2" type="password" placeholder="Repeat password" autocomplete="new-password"/>
+              <span class="input-icon">○</span>
+            </div>
+          </div>
+          <label class="checkbox-label" onclick="toggleCheck(this)" style="align-items:flex-start;gap:10px">
+            <span class="checkbox" id="terms-check" style="margin-top:2px"></span>
+            <span style="line-height:1.55">I agree to DevDrop's <a href="#" onclick="event.stopPropagation()" style="color:var(--dim);font-weight:500;text-decoration:underline;text-underline-offset:2px">Terms of Service</a> and <a href="#" onclick="event.stopPropagation()" style="color:var(--dim);font-weight:500;text-decoration:underline;text-underline-offset:2px">Privacy Policy</a></span>
+          </label>
+          <button class="btn-submit" onclick="submitRegister()" type="button" id="reg-btn">
+            <span class="spinner"></span>
+            <span class="btn-label">Create account →</span>
+          </button>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:12px">
+        <button onclick="showPane('pane-accounts')" type="button" style="background:none;border:none;font-family:var(--f-body);font-size:.8rem;color:var(--mid);cursor:pointer;transition:var(--t-fast)" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--mid)'">← Back to accounts</button>
+      </div>
+    </div>
+
+    <!-- PANE: Forgot password -->
+    <div class="pane" id="pane-forgot">
+      <div class="card-header">
+        <div class="card-title">Reset password</div>
+        <div class="card-sub">Enter your email and we'll send you a link to reset your password.</div>
+      </div>
+      <div class="form-section">
+        <div class="form-group">
+          <label class="label" for="forgot-email">Email address</label>
+          <div class="input-wrap">
+            <input class="input input-has-icon" id="forgot-email" type="email" placeholder="you@example.com"/>
+            <span class="input-icon">◎</span>
+          </div>
+        </div>
+        <button class="btn-submit" onclick="submitForgot()" type="button">
+          <span class="spinner"></span>
+          <span class="btn-label">Send reset link →</span>
+        </button>
+        <div style="text-align:center;margin-top:4px">
+          <button onclick="showPane('pane-accounts')" type="button" style="background:none;border:none;font-family:var(--f-body);font-size:.8rem;color:var(--mid);cursor:pointer;transition:var(--t-fast)" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--mid)'">← Back to sign in</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANE: 2FA verify -->
+    <div class="pane" id="pane-2fa">
+      <div class="verify-wrap">
+        <span class="verify-icon">◈</span>
+        <div class="verify-title">Two-step verification</div>
+        <div class="verify-sub">Enter the 6-digit code sent to<br/><strong id="verify-email-label">your email</strong></div>
+        <div class="otp-row" id="otp-row">
+          <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" oninput="otpMove(this,1)" onkeydown="otpBack(this,event)"/>
+          <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" oninput="otpMove(this,2)" onkeydown="otpBack(this,event)"/>
+          <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" oninput="otpMove(this,3)" onkeydown="otpBack(this,event)"/>
+          <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" oninput="otpMove(this,4)" onkeydown="otpBack(this,event)"/>
+          <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" oninput="otpMove(this,5)" onkeydown="otpBack(this,event)"/>
+          <input class="otp-input" maxlength="1" type="text" inputmode="numeric" pattern="[0-9]" oninput="otpMove(this,6)" onkeydown="otpBack(this,event)"/>
+        </div>
+        <button class="btn-submit" onclick="submitOtp()" type="button" id="otp-btn" style="margin-top:16px">
+          <span class="spinner"></span>
+          <span class="btn-label">Verify →</span>
+        </button>
+        <div class="verify-resend">Didn't receive it? <a onclick="resendOtp()">Resend code</a></div>
+        <div style="margin-top:14px">
+          <button onclick="showPane('pane-accounts')" type="button" style="background:none;border:none;font-family:var(--f-body);font-size:.8rem;color:var(--mid);cursor:pointer" onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--mid)'">← Use a different account</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer note -->
+    <div class="card-footer-note" id="card-footer">
+      New to DevDrop? <a href="#" onclick="switchTab('register');showPane('pane-login');return false">Create a free account →</a>
+    </div>
+  </div>
+
+  <!-- Bottom legal -->
+  <p style="text-align:center;font-size:.74rem;color:var(--soft);line-height:1.65;padding:0 12px">
+    Protected by reCAPTCHA · <a href="#" style="color:var(--soft);text-decoration:underline;text-underline-offset:2px">Privacy</a> · <a href="#" style="color:var(--soft);text-decoration:underline;text-underline-offset:2px">Terms</a>
+  </p>
+</div>
+
+<!-- Toasts -->
+<div class="toasts" id="toasts"></div>
+
+<script src="{{ url_for('static', filename='js/auth/gate.js') }}"></script>
+</body>
+</html>
