@@ -7,7 +7,10 @@ from extensions.response import response
 
 @rate_limit(max_requests=10, window_seconds=60)
 def register() -> tuple:
-    data = request.get_json() or request.form
+    data = request.get_json(silent=True) or request.form
+
+    if not data:
+        return response(False, "Invalid or missing JSON"), 400
 
     schema = RegisterSchema(
         email=data.get("email"),

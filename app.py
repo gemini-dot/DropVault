@@ -11,7 +11,7 @@ import sys
 import io
 from flask import Flask, render_template, request
 from configs.setting import error_code as error_codes
-from configs.config_app import Config
+from configs.config_app import Config, DevelopmentConfig
 from configs.setting import APP_SECRET_KEY
 from routes import register_routes
 from flask_cors import CORS
@@ -22,6 +22,7 @@ from utils.security.csrf import validate_csrf, generate_csrf_token
 from configs.setting import CSRF_EXEMPT
 from extensions.limiter import limiter
 from extensions.database import db
+from os import getenv
 
 
 def create_app():
@@ -35,13 +36,19 @@ def create_app():
     app.secret_key = APP_SECRET_KEY
 
     app.config.update(
-        SESSION_COOKIE_DOMAIN=".vault-storage.me",
         SESSION_COOKIE_NAME="vault-storage-session",
-        SESSION_COOKIE_SECURE=True,
-        SESSION_COOKIE_SAMESITE="Lax",  # HACK: With the previous project, Lax could cause server errors; this needs to be considered before use.
         SESSION_COOKIE_HTTPONLY=True,
         SESSION_COOKIE_PATH="/",
     )
+
+    if app.debug:
+        app.config["SESSION_COOKIE_DOMAIN"] = None
+        app.config["SESSION_COOKIE_SECURE"] = False
+        app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+    else:
+        app.config["SESSION_COOKIE_DOMAIN"] = ".vault-storage.me"
+        app.config["SESSION_COOKIE_SECURE"] = True
+        app.config["SESSION_COOKIE_SAMESITE"] = "None"  # nếu cross-site
 
     CORS(
         app,
@@ -53,7 +60,7 @@ def create_app():
             "https://vault-storage.me",
             "https://dashboard.vault-storage.me",
             "https://api.vault-storage.me",
-            "https://dropvault-uxeo.onrender.com"
+            "https://dropvault-uxeo.onrender.com",
             # TODO: add more allowed origins as needed, and consider using environment variables for better flexibility in different deployment environments
             # TODO: Use render.com to test before deploying to Azure.
         ],

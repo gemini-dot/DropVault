@@ -13,7 +13,6 @@ from validators.auth.check_password_strength import check_password_strength
 from validators.auth.valid_username_length import is_valid_username_length
 from configs.argon2_config import ph
 from utils.text.normalization import remove_accents
-from extensions.response import response
 from pymongo.errors import DuplicateKeyError
 
 
@@ -28,6 +27,15 @@ def register_user(email: str, password: str, username: str) -> tuple[dict, int]:
         tuple[dict, int]: A tuple containing a dictionary with the registration result and an HTTP status code.
     """
 
+    if not isinstance(email, str) or not email.strip():
+        return {"success": False, "message": "Email required"}, 400
+
+    if not isinstance(username, str) or not username.strip():
+        return {"success": False, "message": "Username required"}, 400
+
+    if not isinstance(password, str) or not password:
+        return {"success": False, "message": "Password required"}, 400
+
     email = (
         email.strip().lower()
     )  # Normalize email by trimming whitespace and converting to lowercase
@@ -35,21 +43,24 @@ def register_user(email: str, password: str, username: str) -> tuple[dict, int]:
 
     # Validate email format
     if not is_valid_email(email):
-        return response(success=False, message="Invalid email format"), 400
+        return {
+            "success": False,
+            "message": "Invalid email format",
+        }, 400
 
     # Validate username length
     is_valid, msg = is_valid_username_length(username)
 
     if not is_valid:
-        return response(success=False, message=msg), 400
+        return {"success": False, "message": msg}, 400
 
     # Check password strength
     is_strong, message = check_password_strength(password)
     if not is_strong:
-        return response(success=False, message=message), 400
+        return {"success": False, "message": message}, 400
     try:
         if db.users.find_one({"auth.email": email}):
-            return response(success=False, message="Email already registered"), 400
+            return {"success": False, "message": "Email already registered"}, 400
 
         password_hash = ph.hash(
             password
@@ -88,12 +99,16 @@ def register_user(email: str, password: str, username: str) -> tuple[dict, int]:
             }
         ).inserted_id
 
-        return response(success=True, message="User registered successfully"), 201
+        return {
+            "success": True,
+            "message": "User registered successfully",
+            "data": {"user_id": str(user_id)},
+        }, 201
     except DuplicateKeyError:
-        return response(False, "Email already exists"), 400
+        return {"success": False, "message": "Email already exists"}, 400
     except Exception as e:
         print(f"An error occurred during registration: {e}")
         return (
-            response(success=False, message="An error occurred during registration"),
+            {"success": False, "message": "An error occurred during registration"},
             500,
         )

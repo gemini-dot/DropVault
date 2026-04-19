@@ -2,6 +2,7 @@ import secrets
 from flask import session, request, abort
 from os import getenv
 
+
 def generate_csrf_token():
     if "csrf_token" not in session:
         session["csrf_token"] = secrets.token_urlsafe(32)

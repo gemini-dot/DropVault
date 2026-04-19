@@ -68,4 +68,3 @@ def get_db() -> Database:
     if _db is None:
         return init_db()
     return _db
-
