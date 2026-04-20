@@ -18,8 +18,10 @@ from flask_session import Session
 from flask_compress import Compress
 from extensions.limiter import limiter
 from flask_wtf import CSRFProtect
+from middlewares.security_headers import register_security_headers
 
 csrf = CSRFProtect()
+
 
 def create_app():
 
@@ -27,6 +29,7 @@ def create_app():
 
     limiter.init_app(app)
     csrf.init_app(app)
+    register_security_headers(app)
 
     app.config.from_object(Config)
 

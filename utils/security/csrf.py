@@ -10,7 +10,6 @@ def generate_csrf_token():
 
 def validate_csrf():
 
-
     token = request.headers.get("X-CSRF-Token")
     session_token = session.get("csrf_token")
 
