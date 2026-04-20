@@ -7,9 +7,7 @@ This module initializes the Flask application, configures middleware, registers 
 @license: Private / Internal Use Only
 """
 
-import sys
-import io
-from flask import Flask, render_template, request
+from flask import Flask, render_template
 from configs.setting import error_code as error_codes
 from configs.config_app import Config
 from configs.setting import APP_SECRET_KEY
@@ -18,18 +16,17 @@ from flask_cors import CORS
 from configs.sentry import init_sentry
 from flask_session import Session
 from flask_compress import Compress
-from utils.security.csrf import validate_csrf, generate_csrf_token
-from configs.setting import CSRF_EXEMPT
 from extensions.limiter import limiter
-from extensions.database import db
-from os import getenv
+from flask_wtf import CSRFProtect
 
+csrf = CSRFProtect()
 
 def create_app():
 
     app = Flask(__name__)
 
     limiter.init_app(app)
+    csrf.init_app(app)
 
     app.config.from_object(Config)
 
@@ -48,7 +45,7 @@ def create_app():
     else:
         app.config["SESSION_COOKIE_DOMAIN"] = ".vault-storage.me"
         app.config["SESSION_COOKIE_SECURE"] = True
-        app.config["SESSION_COOKIE_SAMESITE"] = "None"  # nếu cross-site
+        app.config["SESSION_COOKIE_SAMESITE"] = "None"  # cross-site
 
     CORS(
         app,
@@ -84,16 +81,6 @@ def create_app():
             app.register_error_handler(code, handle_error)
         except Exception as e:
             print(f"Error registering handler for {code}: {e}")
-
-    @app.before_request
-    def csrf_protect():
-
-        generate_csrf_token()  # Ensure that a CSRF token is generated for each request and stored in the session, so it can be validated for state-changing requests (POST, PUT, PATCH, DELETE). This helps protect against CSRF attacks by ensuring that the request is coming from a trusted source (i.e., the user's browser with a valid session) and not from a malicious third-party site. The token should be included in the request headers or form data for validation in the validate_csrf() function.
-
-        if request.endpoint and request.endpoint in CSRF_EXEMPT:
-            return
-        if request.method in ["POST", "PUT", "PATCH", "DELETE"]:
-            validate_csrf()
 
     @app.route("/")
     def main():
