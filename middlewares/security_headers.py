@@ -6,6 +6,7 @@ This module sets security headers for the Flask application to enhance security 
 @Author: CuSam
 """
 
+
 def register_security_headers(app):
     @app.after_request
     def set_security_headers(response):

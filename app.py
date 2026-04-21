@@ -19,6 +19,7 @@ from flask_compress import Compress
 from extensions.limiter import limiter
 from flask_wtf import CSRFProtect
 from middlewares.security_headers import register_security_headers
+from extensions.LoginManager import login_manager
 
 csrf = CSRFProtect()
 
@@ -34,6 +35,10 @@ def create_app():
     app.config.from_object(Config)
 
     app.secret_key = APP_SECRET_KEY
+    login_manager.init_app(app)
+
+    import middlewares.unauthorized_login
+    import middlewares.auth_loader
 
     app.config.update(
         SESSION_COOKIE_NAME="vault-storage-session",

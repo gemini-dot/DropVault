@@ -51,6 +51,7 @@ def login_user(user_email: str, password: str) -> tuple[dict, int]:
         return {"success": False, "message": "User not found"}, 404
 
     auth_data = user.get("auth", {})
+    profile_data = user.get("profile", {})
     stored_hash = auth_data.get("password")
 
     try:
@@ -70,6 +71,7 @@ def login_user(user_email: str, password: str) -> tuple[dict, int]:
             "success": True,
             "message": "Login successful",
             "user_id": auth_data.get("user_id"),
+            "username": profile_data.get("display_name", "anonymous user"),
         }, 200
     except VerifyMismatchError:
         return {"success": False, "message": "Invalid password"}, 401
