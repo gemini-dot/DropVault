@@ -48,7 +48,7 @@ class User(UserMixin):
         profile = data.get("profile", {})
 
         return User(
-            id=data["_id"],
+            id=data.get("_id"),
             username=profile.get("display_name_normalized", "anonymous user"),
             email=auth.get("email"),
             is_active=(auth.get("status") == "active"),
