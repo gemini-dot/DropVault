@@ -6,7 +6,6 @@ This module defines a custom unauthorized handler for the Flask-Login extension.
 @Author: CuSam
 """
 
-
 from extensions.LoginManager import login_manager
 from flask import render_template, request, jsonify
 
@@ -20,11 +19,14 @@ def unauthorized():
     )
 
     if wants_json:
-        return jsonify(
-            {
-                "success": False,
-                "message": "Unauthorized access. Please log in to continue.",
-            }
-        ), 401
+        return (
+            jsonify(
+                {
+                    "success": False,
+                    "message": "Unauthorized access. Please log in to continue.",
+                }
+            ),
+            401,
+        )
 
     return render_template("errors/401.html"), 401

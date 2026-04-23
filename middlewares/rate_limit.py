@@ -57,7 +57,7 @@ def get_rate_limit_script():
 # =========================
 # Decorator
 # =========================
-def rate_limit(max_requests: int, window_seconds: int):
+def rate_limit(max_requests: int, window_seconds: int) -> callable:
     def decorator(f):
         @wraps(f)
         def wrapped(*args, **kwargs):

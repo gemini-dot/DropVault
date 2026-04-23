@@ -37,6 +37,10 @@ def create_app():
     app.secret_key = APP_SECRET_KEY
     login_manager.init_app(app)
 
+    login_manager.session_protection = (
+        "strong"  # Use strong session protection to prevent session hijacking
+    )
+
     import middlewares.unauthorized_login
     import middlewares.auth_loader
 

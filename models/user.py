@@ -21,20 +21,22 @@ class User(UserMixin):
         self._is_active = is_active
         self.role = role
 
-    def get_id(self):
+    def get_id(self) -> str:
         """Return the unique identifier of the user as a string."""
         return str(self.id)
 
-    def is_active(self):
+    def is_active(self) -> bool:
         """Return whether the user account is active."""
         return self._is_active
 
     @staticmethod
-    def get_by_id(user_id):
+    def get_by_id(user_id: str) -> "User" | None:
         from configs.database import db
 
         try:
-            data = db.users.find_one({"_id": ObjectId(user_id)})
+            data = db.users.find_one(
+                {"_id": ObjectId(user_id)}, {"_id": 1, "auth": 1, "profile": 1}
+            )
         except InvalidId:
             return None
         except Exception as e:

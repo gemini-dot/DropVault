@@ -70,7 +70,7 @@ def login_user(user_email: str, password: str) -> tuple[dict, int]:
         return {
             "success": True,
             "message": "Login successful",
-            "user_id": auth_data.get("user_id"),
+            "user_id": user.get("_id"),
             "username": profile_data.get("display_name", "anonymous user"),
         }, 200
     except VerifyMismatchError:
