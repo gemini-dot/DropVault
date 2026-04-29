@@ -45,7 +45,7 @@ def login_user(user_email: str, password: str) -> tuple[dict, int]:
 
     user = db.users.find_one(
         {"auth.email": str(user_email)},
-        {"_id": 0, "auth.password": 1, "auth.user_id": 1},
+        {"_id": 1, "auth.password": 1, "auth.user_id": 1},
     )
     if not user:
         return {"success": False, "message": "User not found"}, 404
